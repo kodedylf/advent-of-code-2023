@@ -63,8 +63,6 @@ class Program
          foreach (var line in lines) {
             var game = new Game();
             game.Id = int.Parse(line.Split(": ")[0].Split(" ")[1]);
-            var pulls = new List<Pull>();
-            game.Pulls = pulls;
             var pullsAsString = line.Split(": ")[1].Split("; ");
             foreach (var pullAsString in pullsAsString) {
                 var cubes = new List<(Color, int)>();
@@ -73,7 +71,7 @@ class Program
                     var colorOfCubes = (Color)Enum.Parse<Color>(cubesAsString.Split(" ")[1]);
                     cubes.Add((colorOfCubes, noOfCubes));
                 }
-                pulls.Add(new Pull {Cubes = cubes});
+                game.Pulls.Add(new Pull {Cubes = cubes});
             }
             yield return game;
          }
@@ -88,9 +86,9 @@ public enum Color {
 
 public class Game {
     public int Id;
-    public IEnumerable<Pull> Pulls;
+    public List<Pull> Pulls = new List<Pull>();
 }
 
 public class Pull {
-    public IEnumerable<(Color, int)> Cubes;
+    public List<(Color, int)> Cubes = new List<(Color, int)>();
 }
