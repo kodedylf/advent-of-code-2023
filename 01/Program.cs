@@ -23,33 +23,32 @@ class Program
     {
         int sum = 0;
         foreach (var line in data) {
-            var l = line;
-            for (var i = 0; i < l.Length; i++)
-            {
-                l = ReplaceAtIndex(l, "one", "1", i);
-                l = ReplaceAtIndex(l, "two", "2", i);
-                l = ReplaceAtIndex(l, "three", "3", i);
-                l = ReplaceAtIndex(l, "four", "4", i);
-                l = ReplaceAtIndex(l, "five", "5", i);
-                l = ReplaceAtIndex(l, "six", "6", i);
-                l = ReplaceAtIndex(l, "seven", "7", i);
-                l = ReplaceAtIndex(l, "eight", "8", i);
-                l = ReplaceAtIndex(l, "nine", "9", i);
-            }
-            var digits = l.Where(char.IsNumber).ToArray();
-            var firstAndLast = "" + digits[0] + digits[^1];
-            var number = int.Parse(firstAndLast);
+            var firstDigit = SearchForDigit(line, 0, 1);
+            var lastDigit = SearchForDigit(line, line.Length-1, -1);
+            var number = int.Parse(firstDigit + lastDigit);
             Console.WriteLine($"{line} - {number}");
             sum += number;
         }
         Console.WriteLine(sum);
     }
 
-    private static string ReplaceAtIndex(string s, string oldString, string newString, int index)
+    private static string SearchForDigit(string line, int startIx, int increment)
     {
-        if (index + oldString.Length > s.Length) return s;
-        if (s.Substring(index, oldString.Length) != oldString) return s;
-        return s.Substring(0, index) + newString + s.Substring(index + oldString.Length);
+        var i = startIx;
+        while (i >= 0 && i < line.Length) {
+            if (char.IsNumber(line[i])) return "" + line[i];
+            if (i + 3 <= line.Length && line.Substring(i, 3) == "one") return "1";
+            if (i + 3 <= line.Length && line.Substring(i, 3) == "two") return "2";
+            if (i + 5 <= line.Length && line.Substring(i, 5) == "three") return "3";
+            if (i + 4 <= line.Length && line.Substring(i, 4) == "four") return "4";
+            if (i + 4 <= line.Length && line.Substring(i, 4) == "five") return "5";
+            if (i + 3 <= line.Length && line.Substring(i, 3) == "six") return "6";
+            if (i + 5 <= line.Length && line.Substring(i, 5) == "seven") return "7";
+            if (i + 5 <= line.Length && line.Substring(i, 5) == "eight") return "8";
+            if (i + 4 <= line.Length && line.Substring(i, 4) == "nine") return "9";
+            i += increment;
+        }
+        throw new ArgumentException(line);
     }
 
     private static string[] ReadData() 
