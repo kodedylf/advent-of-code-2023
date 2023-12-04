@@ -9,33 +9,22 @@ class Program
     }
 
     private static void DoPart1(IEnumerable<Card> cards) {
-        int sum = cards.Select(ValueOfCard).Sum();
+        int sum = cards.Select(c => c.PointsValue).Sum();
         Console.WriteLine(sum);
     }
 
     private static void DoPart2(IEnumerable<Card> cards) {
-        int sum = 0;
         var cardsAsArray = cards.ToArray();
         int[] copiesOfCard = new int[cardsAsArray.Count()];
         Array.Fill(copiesOfCard, 1);
         for (int i = 0; i < cardsAsArray.Count(); i++) {
-            var n = NumberOfWinningValuesOnCard(cardsAsArray[i]);
-            for (int j=0; j<n; j++) {
+            for (int j=0; j<cardsAsArray[i].NumberOfWinningNumbers; j++) {
                 if (i+j+1 < cardsAsArray.Count())
                     copiesOfCard[i+j+1] += copiesOfCard[i];
             }
         }
         Console.WriteLine(copiesOfCard.Sum());
     }
-
-    private static int ValueOfCard(Card card) {
-        return (int)Math.Pow(2, NumberOfWinningValuesOnCard(card) - 1);
-    }
-
-    private static int NumberOfWinningValuesOnCard(Card card) {
-        return card.CardNumbers.Where(n => card.WinningNumbers.Contains(n)).Count();
-    }
-
     static IEnumerable<Card> ReadData(string filename) {
         var lines = File.ReadAllLines(filename);
         foreach (var line in lines) {
@@ -53,4 +42,6 @@ public class Card {
     }
     public IEnumerable<int> WinningNumbers;
     public IEnumerable<int> CardNumbers;
+    public int NumberOfWinningNumbers => CardNumbers.Where(n => WinningNumbers.Contains(n)).Count();
+    public int PointsValue => (int)Math.Pow(2, NumberOfWinningNumbers - 1);
 }
